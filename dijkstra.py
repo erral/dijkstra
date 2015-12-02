@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import collections
 import csv
 import functools
@@ -146,11 +147,19 @@ class Graph(object):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Enter origin and destination airports's codes")
+    parser.add_argument('origin', type=str, help='Enter the 3 letter code of the origin airport')
+    parser.add_argument('destination', type=str, help='Enter the 3 letter code of the destination airport')
+
+    arguments = parser.parse_args()
 
     world = Graph.load()
-    valencia = AIRPORTS['VLC']
-    portland = AIRPORTS['PDX']
-    distance, path = world.dijkstra(valencia, portland)
-    for index, airport in enumerate(path):
-        print(index, '|', airport)
-    print(distance, '€')
+    origin = AIRPORTS.get(arguments.origin, None)
+    destination = AIRPORTS.get(arguments.destination, None)
+    if origin is None or destination is None:
+        print("Origin or destination airport data is not available")
+    else:
+        distance, path = world.dijkstra(origin, destination)
+        for index, airport in enumerate(path):
+            print(index, '|', airport)
+        print(distance, '€')
